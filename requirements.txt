@@ -1,0 +1,4 @@
+discord.py[voice]
+fuzzywuzzy
+python-Levenshtein
+mcipc

@@ -1,0 +1,31 @@
+{
+    "general": {
+        "1": "Don't be disrespectful of others.",
+        "2": "TikTok is BANNED. (Making fun of it is highly encouraged)",
+        "3": "Have a good username that is easily typeable.",
+        "4": "No abusing admin permissions.",
+        "5": "Use common sense. Don't abuse loopholes just because they aren't specifically listed in the rules."
+    },
+    "discord": {
+        "1": "Refrain from consistently spamming.",
+        "2": "Keep bots at a minimum.",
+        "3": "Talk and use commands in the correct channels.",
+        "4": "Never remove member roles without first hosting a majority vote. This rule can only be bypassed if the action is temporary, but their role must be returned."
+    },
+    "minecraft": {
+        "1": "To be whitelisted, you must be a part of this Discord server.",
+        "2": "No stealing from other people.",
+        "3": "No cheating/hacking/exploiting unless specifically allowed.",
+        "4": "No hacked accounts (including those from alt stores)",
+        "5": "No cancelling sleep without a good reason. It's not funny.",
+        "6": "Do not do anything that could cause someone to lose items/builds. (Death traps, etc.)",
+        "7": "No random killing.",
+        "8": "No griefing. If you accidently break a build (especially farms), repair it as soon as possible.",
+        "9": "Don't abuse allowed mods."
+    },
+    "music": {
+        "1": "No playing loud music unless all people in voice chat agree on it.",
+        "2": "Don't play troll audios if someone in the voice channel is actually listening to music.",
+        "3": "Don't (force) skip others' songs unless they approve or it is clear they played it as a joke."
+    }
+}
