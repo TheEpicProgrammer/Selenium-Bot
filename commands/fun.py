@@ -1,8 +1,11 @@
 import discord
 from discord.ext import commands
 
+from fuzzywuzzy import process
 import os
 import typing
+import asyncio
+import random
 
 
 class FunCog(commands.Cog):
@@ -25,7 +28,7 @@ class FunCog(commands.Cog):
 
     @commands.command(name="._.")
     async def wut(self, ctx, times:typing.Optional[int]=3):
-        await ctx.message.delete()
+        # await ctx.message.delete()
     
         sp=[""," "]
         msg = await ctx.send("("+"._.".join(sp)+")")
@@ -41,7 +44,7 @@ class FunCog(commands.Cog):
         files = os.listdir("files/images/cats")
         while (f:=random.choice(files)) != self.lastcat:
             self.lastcat = f
-            catPicture = discord.File(f"images/cats/{f}")
+            catPicture = discord.File(f"files/images/cats/{f}")
             await ctx.send(file=catPicture)
             break
     
@@ -51,6 +54,10 @@ class FunCog(commands.Cog):
         match = process.extractOne(st, ops)
         await ctx.send(f"{st} is {match[1]}% similar to {match[0]}")
 
+
+    @commands.command(name="deletethis")
+    async def deletethis(self, ctx, time=1):
+        await ctx.message.delete(delay=time)
 
 def setup(bot):
     bot.add_cog(FunCog(bot))

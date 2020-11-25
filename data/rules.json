@@ -1,43 +1,45 @@
 {
-    "general": {
-        "1": "Don't be disrespectful of others.",
-        "2": "TikTok is BANNED. (Making fun of it is highly encouraged)",
-        "3": "Have a good username that is easily typeable.",
-        "4": "No abusing admin permissions.",
-        "5": "Use common sense. Don't abuse loopholes just because they aren't specifically listed in the rules."
-    },
-    "discord": {
-        "1": "Refrain from consistently spamming. This includes pings.",
-        "2": "Minimize the amount of bots in the server.",
-        "3": "Talk and use commands in the correct channels.",
-        "4": "Make voting fair. Don't ask somebody to vote what you want **if they don't know what is going on**"
-    },
-    "minecraft": {
-        "1": "To be whitelisted, you must be a part of this Discord server.",
-        "2": "No stealing from other people.",
-        "3": "No cheating/hacking/exploiting unless specifically allowed.",
-        "4": "No hacked accounts (including those from alt stores)",
-        "5": "Do not do anything that could cause someone to lose items/builds. (Death traps, etc.)",
-        "6": "No random killing.",
-        "7": "No griefing. If you accidently break a build (especially farms), repair it as soon as possible.",
-        "8": "Don't abuse allowed mods.",
-        "9": "The only duping allowed is sand, tnt, dragon egg and carpet"
-    },
-    "music": {
-        "1": "No playing loud music unless all people in voice chat agree on it.",
-        "2": "Don't play troll audios if someone in the voice channel is actually listening to music.",
-        "3": "Don't (force) skip others' songs unless they approve or it is clear they played it as a joke."
-    },
-    "punishment": {
-        "1": "People will be punished by either a demote or ban.",
-        "2": "Discord: they will be demoted down to <@&762337515528912896>. If they already are one, they will be banned for 24 hours. Ban period may be extended to up to a week if needed.",
-        "3": "On Minecraft, it will be a of ban up to 2 weeks."
+    "rules": {
+        "general": {
+            "1": "Don't be disrespectful of others.",
+            "2": "TikTok is BANNED. (Making fun of it is highly encouraged)",
+            "3": "Have a good username that is easily typeable.",
+            "4": "No abusing admin permissions.",
+            "5": "Use common sense. Don't abuse loopholes just because they aren't specifically listed in the rules."
+        },
+        "discord": {
+            "1": "Refrain from consistently spamming. This includes pings.",
+            "2": "Minimize the amount of bots in the server.",
+            "3": "Talk and use commands in the correct channels.",
+            "4": "Make voting fair. Don't ask somebody to vote what you want **if they don't know what is going on**"
+        },
+        "minecraft": {
+            "1": "To be whitelisted, you must be a part of this Discord server.",
+            "2": "No stealing from other people.",
+            "3": "No cheating/hacking/exploiting unless specifically allowed.",
+            "4": "No hacked accounts (including those from alt stores)",
+            "5": "Do not do anything that could cause someone to lose items/builds. (Death traps, etc.)",
+            "6": "No random killing.",
+            "7": "No griefing. If you accidently break a build (especially farms), repair it as soon as possible.",
+            "8": "Don't abuse allowed mods.",
+            "9": "The only duping allowed is sand, tnt, dragon egg and carpet"
+        },
+        "music": {
+            "1": "No playing loud music unless all people in voice chat agree on it.",
+            "2": "Don't play troll audios if someone in the voice channel is actually listening to music.",
+            "3": "Don't (force) skip others' songs unless they approve or it is clear they played it as a joke."
+        },
+        "punishment": {
+            "1": "People will be punished by either a demote or ban.",
+            "2": "Discord: they will be demoted down to <@&762337515528912896>. If they already are one, they will be banned for 24 hours. Ban period may be extended to up to a week if needed.",
+            "3": "On Minecraft, it will be a of ban up to 2 weeks."
+        }
     },
     "ids": {
-        "general": 776457619916455976,
-        "discord": 776457620206649355,
-        "minecraft": 776457621049835560,
-        "music": 776457623029022720,
-        "punishment": 776457623599710218
+        "general": 779408461107822593,
+        "discord": 779408462043021363,
+        "minecraft": 779408462408319017,
+        "music": 779408462782005249,
+        "punishment": 779408463612477511
     }
 }

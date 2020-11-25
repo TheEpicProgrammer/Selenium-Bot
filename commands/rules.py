@@ -1,18 +1,20 @@
 import discord
 from discord.ext import commands
 
-import utils.TextUtil
-import utils.RulesUtil
+import utils.TextUtil as TextUtil
+import utils.JsonUtil as JsonUtil
 
 
 class RulesCog(commands.Cog):
+    
     def __init__(self, bot):
         self.bot = bot
     
     @commands.command(name='rules', aliases=['rule'])
     async def rules(self, ctx, command: str, *args):
-        if not 764121607081426945 in list(map(lambda r:r.id,ctx.message.author.roles)):
-            await TextUtil.blink("You do not have the `wheel` role.")
+
+        if not 764121607081426945 in list(map(lambda r: r.id, ctx.message.author.roles)):
+            await TextUtil.blink("You do not have the `wheel` role.", ctx.message)
     
         channel = self.bot.get_channel(737096170043605032)
         authorid = ctx.message.author.id
@@ -21,12 +23,13 @@ class RulesCog(commands.Cog):
         if isRulesChannel:
             await ctx.message.delete()
     
-        rules = rules_get()
+        rules = RulesUtil.get("rules", "rules")
+        ids = RulesUtil.get("rules", "ids")
     
         if command == "init":
             if not "new" in args:
-                for id in rules["ids"]:
-                    msg = await channel.fetch_message(rules["ids"][id])
+                for id in ids.values():
+                    msg = await channel.fetch_message(id)
                     await msg.delete()
     
             for topic in rules:
@@ -38,25 +41,29 @@ class RulesCog(commands.Cog):
                         name=f"Rule {num}", value=rules[topic][num], inline=True)
                 msg = await channel.send(embed=em)
     
-                rules["ids"][topic] = msg.id
+                ids[topic] = msg.id
     
             if not isRulesChannel:
                 await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
     
         elif command == "add":
-            # rules add <string-topic> <string-rule>
+            # Create category
             if len(args) == 1:
                 if args[0] in rules:
-                    await TextUtil.blink("category already exists")
+                    await TextUtil.blink("Category already exists")
                     return
+
                 rules[args[0]] = {}
                 em = discord.Embed(
                     title=f"{args[0].title()} Rules", color=0x52c832)
+
                 msg = await channel.send(embed=em)
-                rules["ids"][args[0]] = msg.id
+                ids[args[0]] = msg.id
+                
+            # Add rule to category
             elif len(args) > 1:
-                if args[0] != "ids" and not args[0] in rules:
-                    await TextUtil.blink(f"category '{args[0]}' does not exist")
+                if args[0] == "ids" and not args[0] in rules:
+                    await TextUtil.blink(f"Category '{args[0]}' does not exist")
                     return
     
                 rules[args[0]][str(len(rules[args[0]]) + 1)] = ' '.join(args[1:])
@@ -64,23 +71,27 @@ class RulesCog(commands.Cog):
                 if args[0] != "ids" and args[0] in rules:
                     em = discord.Embed(
                         title=f"{args[0].title()} Rules", color=0x52c832)
+
                     for num in rules[args[0]]:
                         em.add_field(
                             name=f"Rule {num}",
                             value=rules[args[0]][num],
                             inline=True)
     
-                    msg = await channel.fetch_message(rules["ids"][args[0]])
+                    msg = await channel.fetch_message(ids[args[0]])
                     await msg.edit(embed=em)
-    
-                    if not isRulesChannel:
-                        await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
+
                 else:
                     await TextUtil.blink("Non-existent category")
                     return
+            
+            # 0 arguments
             else:
                 await TextUtil.blink("Not enough arguments")
                 return
+            
+            if not isRulesChannel:
+                await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
     
         elif command == "edit":
             # rules edit <string-topic> <int-id> <string-rule>
@@ -91,9 +102,9 @@ class RulesCog(commands.Cog):
                     await ctx.send("Not enough arguments")
                 return
     
-            if args[0] != "ids" and (match := findClosest(args[0], rules, 50)):
+            if args[0] != "ids" and (match := TextUtil.findClosest(args[0], rules, 50)):
                 if args[0] != match:
-                    msg = await ctx.send(f"Do you mean: `{match}`?")
+                    msg = await ctx.send(f"Did you mean: `{match}`?")
                     await msg.add_reaction("\N{WHITE HEAVY CHECK MARK}")
     
                     for _ in range(10):
@@ -114,55 +125,58 @@ class RulesCog(commands.Cog):
                             value=rules[args[0]][num],
                             inline=True)
     
-                msg = await channel.fetch_message(rules["ids"][args[0]])
+                msg = await channel.fetch_message(ids[args[0]])
                 await msg.edit(embed=em)
-    
-                if not isRulesChannel:
-                    await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
+
             else:
                 await TextUtil.blink("Non-existent category")
                 return
+            
+            if not isRulesChannel:
+                await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
     
         elif command in ["delete", "del"]:
             # rules delete <string-topic> <int>
     
-            if args[0] != "ids" and not args[0] in rules:
-                await TextUtil.blink(f"category '{args[0]}' does not exist")
+            if args[0] == "ids" and not args[0] in rules:
+                await TextUtil.blink(f"Category '{args[0]}' does not exist")
                 return
     
             if len(args) == 1:
-                react = await wait_react(ctx, bot, ctx.message.author.mention+" Are you sure you want to delete this category?", ["✅","❌"], True)
+                react = await TextUtil.wait_react(ctx, self.bot, ctx.message.author.mention+" Are you sure you want to delete this category?", ["✅","❌"], True)
                 if react == "✅":
-                    rules_backup(rules, authorid)
+                    RulesUtil.rules_backup(rules, authorid)
         
                     rules.pop(args[0])
         
-                    msg = await channel.fetch_message(rules["ids"][args[0]])
+                    msg = await channel.fetch_message(ids[args[0]])
                     await msg.delete()
         
-                    rules["ids"].pop(args[0])
+                    ids.pop(args[0])
     
             elif len(args) == 2:
-                rules_backup(rules, authorid)
-    
-                em = discord.Embed(
-                    title=f"{args[0].title()} Rules", color=0x52c832)
-    
-                rules[args[0]].pop(args[1])
-                rules[args[0]] = {
-                    str(i + 1): list(rules[args[0]].values())[i]
-                    for i in range(len(rules[args[0]]))
-                }
-    
-                for num in rules[args[0]]:
-                    em.add_field(
-                        name=f"Rule {num}", value=rules[args[0]][num], inline=True)
-    
-                msg = await channel.fetch_message(rules["ids"][args[0]])
-                await msg.edit(embed=em)
-    
-                if not isRulesChannel:
-                    await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
+                react = await TextUtil.wait_react(ctx, self.bot, ctx.message.author.mention+" Are you sure you want to delete this rule?", ["✅","❌"], True)
+                if react == "✅":
+                    RulesUtil.rules_backup(rules, authorid)
+        
+                    em = discord.Embed(
+                        title=f"{args[0].title()} Rules", color=0x52c832)
+        
+                    rules[args[0]].pop(args[1])
+                    rules[args[0]] = {
+                        str(i + 1): list(rules[args[0]].values())[i]
+                        for i in range(len(rules[args[0]]))
+                    }
+        
+                    for num in rules[args[0]]:
+                        em.add_field(
+                            name=f"Rule {num}", value=rules[args[0]][num], inline=True)
+        
+                    msg = await channel.fetch_message(ids[args[0]])
+                    await msg.edit(embed=em)
+        
+                    if not isRulesChannel:
+                        await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
     
             else:
                 await TextUtil.blink("Not enough arguments")
@@ -172,13 +186,13 @@ class RulesCog(commands.Cog):
             await ctx.send("https://repl.it/@AlexAirbus380/SeleniumBOT#rules.json")
     
         elif command == "backup":
-            rules_backup(rules, authorid)
+            RulesUtil.rules_backup(rules, authorid)
     
         else:
             await TextUtil.blink(f"Unknown command '{command}'")
             return
     
-        rules_dump(rules)
+        RulesUtil.dump({"rules": rules, "ids": ids})
 
 def setup(bot):
     bot.add_cog(RulesCog(bot))

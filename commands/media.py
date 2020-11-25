@@ -2,29 +2,38 @@ import discord
 from discord.ext import commands
 from discord.voice_client import VoiceClient
 
-from pytube import YouTube
+import pytube
 import youtube_dl
 import ffmpeg
 import pafy
+import os
 
-import utils.MediaUtil
+import utils.TextUtil as TextUtil
+import utils.MediaUtil as MediaUtil
+
+
+def get_songs(ext=False):
+    return list(map(lambda s:s.split('.')[0] if ext else s, os.listdir("files/music")))
 
 
 class MediaCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+        self.voice = None
+        self.queue = []
     
 
     @commands.command(name='ytdl')
     async def ytdl(self, ctx, url):
         loadingmsg = await ctx.send("<a:loading:778279344346234941>")
-        yt = Youtube(url)
+        yt = pytube.YouTube(url)
         video = pafy.new(url)
 
         title = video.title
         best = video.getbest(preftype="mp4")
-        # output = best.download(filepath="video/" + video.title.replace(' ', '').replace('/', '') + "." + best.extension, quiet=False)
+        # output = best.download(filepath="files/video/" + video.title.replace(' ', '').replace('/', '') + "." + best.extension, quiet=False)
         d_video = yt.get(mp4files[-1].extension, mp4files[-1].resolution)
         d_video.download("files/video/")
         
@@ -36,33 +45,42 @@ class MediaCog(commands.Cog):
 
     @commands.command(name='music')
     async def music(self, ctx, command, *args):
-        #channel = self.bot.get_channel(737093341493198953)
+        # channel = self.bot.get_channel(737093341493198953)
     
         if command == "play":
             channel = ctx.author.voice.channel
             song = ' '.join(args)
     
             # fuzzy match
-            match = findClosest(song, get_songs(True))
+            match = TextUtil.findClosest(song, get_songs(True))
             if match:
-                player = discord.FFmpegPCMAudio(f'music/{match}.mp3')
+                player = discord.FFmpegPCMAudio(f'files/music/{match}.mp3')
                 await ctx.send(f"Playing :notes:  `{match}`")
-                vc = await channel.connect()
+                self.voice = await channel.connect()
             else:
                 await ctx.send(f"Song `{song}` does not exist.")
                 return
+
         elif command == "list":
-            songs = get_songs()
-            f = '\n'.join(list(map(lambda f:'• '+f, songs)))
+            f = '\n'.join(list(map(lambda f:'• '+f, get_songs())))
             await ctx.send(f"List of songs:\n```{f}```")
             return
+
         elif command in ["disconnect", "dc", "leave"]:
-            await vc.disconnect()
+            if self.voice:
+                await self.voice.disconnect()
+            else:
+                await ctx.send("Already disconnected.")
+
+            return
+        
+        elif command == "state":
+            await ctx.send(self.voice)
             return
     
         # https://stackoverflow.com/a/62107725 owo
     
-        vc.play(player, after=None)
+        self.voice.play(player, after=None)
 
 
 def setup(bot):

@@ -1,14 +1,20 @@
 import discord
 from discord.ext import commands
 
-from utils import TextUtil
+import utils.TextUtil as TextUtil
+
 
 class TestCog(commands.Cog):
+    
     def __init__(self, bot):
         self.bot = bot
-
+        
     @commands.command(name='test')
     async def test(self, ctx):
+        if not 779184892378349618 in list(map(lambda r:r.id,ctx.message.author.roles)):
+            await TextUtil.blink("You do not have the `wheel` role. noob. get gud.")
+            return
+        
         react = await TextUtil.wait_react(ctx, self.bot, ctx.message.author.mention+" Are you sure you want to run the test?", ["✅","❌"], True if "del" in ctx.message.content else False)
         if react and react == "✅":
             embed=discord.Embed(title="Is it really a test?", color=0x52c832)

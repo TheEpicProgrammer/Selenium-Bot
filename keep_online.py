@@ -9,7 +9,7 @@ app.config['UPLOAD_FOLDER'] = "files/video/"
 
 @app.route("/")
 def index():
-    return "Nothing To see here"
+    return "<pre>Nothing to see here</pre>"
 
 
 @app.route("/backup/<id>")
@@ -28,12 +28,12 @@ def returnfile(file):
     try:
         return send_from_directory(app.config['UPLOAD_FOLDER'], file)
     except:
-        return f"File '{file}' not found"
+        return f"<pre>File '{file}' not found</pre>"
 
 
 def run():
     app.run(host="0.0.0.0", port=8080)
 
-def keep_alive():
+def start():
     server = Thread(target=run)
     server.start()
