@@ -15,4 +15,4 @@
   - [ ] `;ytdl` command
 
 - Selenium Bot website
-  - [ ] 
+  - [ ] Replace `Nothing to see here`
